@@ -1,0 +1,13 @@
+{
+                     "instanceId": 20,
+                     "registryTypeCode": "02.001.005_45343_CoDowFF",
+                     "accountType": "someType",
+                     "currencyCode": "500",
+                     "branchCode": "0021",
+                     "priorityCode": "00",
+                     "mdmCode": "13",
+                     "clientCode": "client456",
+                     "trainRegion": "region123",
+                     "counter": "counter123",
+                     "salesCode": "sales123"
+}
