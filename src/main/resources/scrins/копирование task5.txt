@@ -1,0 +1,40 @@
+
+
+проблемы запуска том кат 
+решаются https://mozgit.by/2022/4/22/zapusk-docker-kontejnera-i-pervaja-oshibka-c-veb-serverom-tomcat-http-status-404-not-found/
+вот как 
+-------------------------
+
+
+
+
+--------------------------
+
+запуск приложения в docker 
+1. перейти в корень проекта там должен быть dockerfile
+2.docker bulid task5  --создание image   проекта 
+
+
+
+
+
+
+
+----------------------------
+C:\Users\asivchenko\IdeaProjects\Task5>docker run -d --name task5 tomcat:latest
+1ae0e3d9937ad6f39b627d892c48791bbc39ec1d2724f12e4139a21397e88f23
+
+C:\Users\asivchenko\IdeaProjects\Task5>docker cp C:/Users/asivchenko/IdeaProjects/Task5/out/artifacts/Task5_jar/Task5.jar task5:/usr/local/tomcat/webapps/task5.jar
+Successfully copied 89.7MB to task5:/usr/local/tomcat/webapps/task5.jar
+
+C:\Users\asivchenko\IdeaProjects\Task5>docker images
+REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
+tomcat                     latest    0e4bc5c3e311   2 weeks ago    455MB
+docker/welcome-to-docker   latest    c1f619b6477e   5 months ago   18.6MB
+herlanin/postgreesql       9.5       c3704c6b08df   5 years ago    274MB
+
+C:\Users\asivchenko\IdeaProjects\Task5>docker  ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS          PORTS                              NAMES
+1ae0e3d9937a   tomcat:latest   "catalina.sh run"        15 minutes ago   Up 15 minutes   8080/tcp                           task5
+6e4ad211417a   tomcat:latest   "catalina.sh run"        8 days ago       Up 8 days       8080/tcp, 0.0.0.0:8080->8081/tcp   recursing_margulis
+00fbcb096a06   c3704c6b08df    "/docker-entrypoint.…"   2 weeks ago      Up 8 days       0.0.0.0:5432->5432/tcp             postgres
