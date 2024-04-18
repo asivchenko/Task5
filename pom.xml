@@ -187,6 +187,20 @@
                     </filesets>
                 </configuration>
             </plugin>
+            <plugin>  <!--   !!!!!!!!!!!!!!-создание манифеста при build -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.example.MainApplication</mainClass>   <!-- головной класс -->
+                        </manifest>
+                    </archive>
+                    <finalName>Task5</finalName>   <!--  Имя jar файла -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @RestController
 public class RouterController {
 
-    @Autowired
+   @Autowired
     private  ObjectMapper objectMapper;
     @Autowired
     private ProductRegisterController productRegisterController;

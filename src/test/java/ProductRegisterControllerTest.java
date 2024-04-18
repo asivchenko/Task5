@@ -1,28 +1,19 @@
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.checkerframework.checker.nullness.qual.AssertNonNullIfNonNull;
 import org.example.MainApplication;
 import org.example.ProductRegisterController;
-import  org.example.ProductRegisterController.*;
-import org.example.ProductRegisterServis;
-import org.example.ProductRegisterServis.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.ProductRegisterService;
 import org.example.dataRequest.ProductRegisterRequest;
 import org.example.dataRequest.ResponceBuilder;
 import org.example.entity.AccountEntity;
 import org.example.entity.TppProductRegisterEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
@@ -42,8 +33,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import org.junit.jupiter.api.*;
-    @SpringBootTest(classes = MainApplication.class)
+
+@SpringBootTest(classes = MainApplication.class)
     @AutoConfigureMockMvc
     public class ProductRegisterControllerTest {
 
@@ -51,7 +42,9 @@ import org.junit.jupiter.api.*;
         private MockMvc mockMvc;
 
         @MockBean
-        private ProductRegisterServis productRegisterService;
+        private org.example.ProductRegisterService productRegisterService;
+        @MockBean
+        private org.example.ProductRegisterUtils registerUtils;
 
         @Test
         @DisplayName("Тестируем проверку на дубль параметра registryTypeCode для экземпляра продукта ")
@@ -62,7 +55,7 @@ import org.junit.jupiter.api.*;
             byte[] fileBytes  = FileCopyUtils.copyToByteArray(resource.getInputStream());
             String requestJson = new String (fileBytes);
             //////////////////////
-            when(productRegisterService.checkDubl(any(Integer.class), any(String.class))).thenReturn(true);
+            when(registerUtils.checkDubl(any(Integer.class), any(String.class))).thenReturn(true);
 
             // Отправляем запрос на обработку и проверяем статус ответа
             mockMvc.perform(MockMvcRequestBuilders.post("/corporate-settlement-account/create")
@@ -77,7 +70,7 @@ import org.junit.jupiter.api.*;
         @Test
         @DisplayName("Тестируем проверку валидности параметра registryTypeCode по справочнику tpp_ref_product_register_type")
         void testProcessRequestValidRegisterTypeCode() throws JsonProcessingException,Exception {
-         ProductRegisterServis productRegisterService = Mockito.mock(ProductRegisterServis.class);
+         ProductRegisterService productRegisterService = Mockito.mock(ProductRegisterService.class);
          ProductRegisterController controller = new ProductRegisterController();
          String jsonFilePath ="Jsontest/requestproductregist.json";
          ClassPathResource resource =new ClassPathResource(jsonFilePath);
@@ -85,7 +78,7 @@ import org.junit.jupiter.api.*;
          String requestJson = new String (fileBytes);
          ObjectMapper objectMapper = new ObjectMapper();
          ProductRegisterRequest request = objectMapper.readValue(requestJson, ProductRegisterRequest.class);
-         when(productRegisterService.getType(any())).thenReturn(Optional.empty());
+         when(registerUtils.getType(any())).thenReturn(Optional.empty());
             mockMvc.perform(MockMvcRequestBuilders.post("/corporate-settlement-account/create")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestJson))
@@ -98,15 +91,15 @@ import org.junit.jupiter.api.*;
         @Test
         @DisplayName("Тестируем создание записи ProductRegist отправку сообщения со статусом OK")
         void testProcessCreateProductRegister() throws JsonProcessingException,Exception {
-            ProductRegisterServis productRegisterService = Mockito.mock(ProductRegisterServis.class);
+            ProductRegisterService productRegisterService = Mockito.mock(ProductRegisterService.class);
             String axpectedJson ="{\"data\":{\"registerId\":\"23\"}}";
             AccountEntity mockAccount =new AccountEntity();
             mockAccount.setId(100);
-            when (productRegisterService.getAccount(any(String.class),any(String.class),any(String.class),any(String.class),any(String.class)))
+            when (registerUtils.getAccount(any(String.class),any(String.class),any(String.class),any(String.class),any(String.class)))
                     .thenReturn(mockAccount);
             TppProductRegisterEntity mockProductRegister =new TppProductRegisterEntity();
             mockProductRegister.setId(23);
-            when (productRegisterService.createProductRegister(any(AccountEntity.class),any(TppProductRegisterEntity.class)))
+            when (registerUtils.createProductRegister(any(AccountEntity.class),any(TppProductRegisterEntity.class)))
                     .thenReturn(mockProductRegister);
             ResponseEntity<?> responseEntity=ResponseEntity.ok().body(ResponceBuilder.buildResponseRegisterId(23));
             assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
