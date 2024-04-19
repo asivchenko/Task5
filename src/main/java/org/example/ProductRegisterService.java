@@ -1,5 +1,4 @@
 package org.example;
-
 import org.example.dataRequest.Enum.ProductRegisterState;
 import org.example.dataRequest.ProductRegisterRequest;
 import org.example.entity.AccountEntity;
@@ -7,7 +6,6 @@ import org.example.entity.TppProductRegisterEntity;
 import org.example.entity.TppRefProductRegisterTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import static org.example.dataRequest.ResponceBuilder.buildResponseRegisterId;
@@ -15,7 +13,7 @@ import static org.example.dataRequest.ResponceBuilder.buildResponseRegisterId;
 public class ProductRegisterService {
     @Autowired
     ProductRegisterUtils registerUtils ;
-    public ResponseEntity<?> processProductRegister (ProductRegisterRequest request)
+    public ProductRegisterResponse processProductRegister (ProductRegisterRequest request)
     {
         // шаг 2  Проверка таблицы ПР (таблица tpp_product_register) на дубли.
         // Для этого необходимо отобрать строки по
@@ -25,9 +23,10 @@ public class ProductRegisterService {
         // Если результат отбора не пуст, значит имеются повторы
         if (registerUtils.checkDubl(request.getInstanceId(),request.getRegistryTypeCode())) {
             // status 404
-            return ResponseEntity.badRequest().body("Параметр registryTypeCode тип регистра <"
+
+            return new ProductRegisterResponse("Параметр registryTypeCode тип регистра <"
                     + request.getRegistryTypeCode() + "> уже существует для ЭП с ИД  <"
-                    + request.getInstanceId() + ">.");
+                    + request.getInstanceId() + ">.",HttpStatus.BAD_REQUEST );
         }
         //Шаг 3.  Взять значение из Request.Body.registryTypeCode и
         // найти соответствующие ему записи в tpp_ref_product_register_type.value.
@@ -43,9 +42,8 @@ public class ProductRegisterService {
             // неТ смысла запоминать ключ TppRefProductRegisterTypeEntity.id
         }
         else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body ("Код продукта <"+ request.getRegistryTypeCode() +">"
-                    + " не найдено в Каталоге продуктов <public.tpp_ref_product_register_type> для данного типа регистра");
-
+            return new ProductRegisterResponse("Код продукта <"+ request.getRegistryTypeCode() +">"
+                      + " не найдено в Каталоге продуктов <public.tpp_ref_product_register_type> для данного типа регистра",HttpStatus.NOT_FOUND);
         }
 
         //шаг 4 находим ссылку на aacount по параметрам
@@ -53,8 +51,9 @@ public class ProductRegisterService {
                 request.getCurrencyCode(),request.getMdmCode(),
                 request.getPriorityCode(),request.getRegistryTypeCode());
         if (account==null)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body ("Код Продукта <" +request.getRegistryTypeCode()
-                    + "> не найден счет по указанным реквизитам  для данного типа Регистра");
+            return new ProductRegisterResponse("Код Продукта <" +request.getRegistryTypeCode()
+                    + "> не найден счет по указанным реквизитам  для данного типа Регистра",HttpStatus.NOT_FOUND );
+
         ///заполняем запись для добавления для TppProductRegistr
 
         TppProductRegisterEntity productRegister = new TppProductRegisterEntity();
@@ -65,7 +64,7 @@ public class ProductRegisterService {
         productRegister.setState(ProductRegisterState.OPEN.name());
         productRegister.setAccountNumber(account.getAccountNumber());
         productRegister = registerUtils.createProductRegister(account, productRegister);
-        return ResponseEntity.ok().body( buildResponseRegisterId(productRegister.getId()));
+        return new ProductRegisterResponse(buildResponseRegisterId(productRegister.getId()),HttpStatus.OK);
     }
 
 

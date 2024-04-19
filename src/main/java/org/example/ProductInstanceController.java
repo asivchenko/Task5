@@ -27,7 +27,9 @@ public class ProductInstanceController {
         if (validateRequest.getErrormessage() !=null  && !validateRequest.getErrormessage().isEmpty())
               return status(HttpStatus.BAD_REQUEST).body ("Не заполнены параметры запроса: " + validateRequest.getErrormessage());
         request =validateRequest.getRequest();
-        return productInstanceService.processProductInstance(request);
+        //return productInstanceService.processProductInstance(request);
+        ProductRegisterResponse response =productInstanceService.processProductInstance(request);
+        return ResponseEntity.status(response.getStatus()).body(response.getMessage());
 
     }
 }

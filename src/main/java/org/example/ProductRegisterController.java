@@ -37,7 +37,7 @@ public class ProductRegisterController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ошибки в запросе:" +errors);
         }
-        return productRegisterService.processProductRegister(request);
+        ProductRegisterResponse response =productRegisterService.processProductRegister(request);
+        return ResponseEntity.status(response.getStatus()).body(response.getMessage());
     }
-
 }
