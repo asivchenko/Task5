@@ -37,6 +37,7 @@ public class RouterController {
     @PostMapping (value="/corporate-settlement-account/create",
             //consumes = "application/json;charset=UTF-8",
             //produces = "application/json;charset=UTF-8"  //всегда  UTF-8
+
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
                  )
