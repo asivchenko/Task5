@@ -34,16 +34,25 @@ public class RouterController {
 
     @Autowired
     private ProductInstanceController productInstanceController;
-    @PostMapping (value="/corporate-settlement-account/create", consumes = "application/json;charset=UTF-8",
-            produces = "application/json;charset=UTF-8")
+    @PostMapping (value="/corporate-settlement-account/create",
+            //consumes = "application/json;charset=UTF-8",
+            //produces = "application/json;charset=UTF-8"  //всегда  UTF-8
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+                 )
+
     public ResponseEntity<?> RouteToRegisterController  (@RequestBody @Valid ProductRegisterRequest requestBody,
                                                          BindingResult result) {
     return productRegisterController.handleProductRegister(requestBody,result);
     }
 
     // вариант получения запроса и обработки (через Mapper) ошибок
-    @PostMapping(value = "/corporate-settlement-instance/create", consumes = "application/json;charset=UTF-8",
-                         produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/corporate-settlement-instance/create",
+                         //consumes = "application/json;charset=UTF-8",
+                         //produces = "application/json;charset=UTF-8"
+                         consumes = MediaType.APPLICATION_JSON_VALUE,
+                         produces = MediaType.APPLICATION_JSON_VALUE
+                 )
     public ResponseEntity<?> RouteToInstanceController( @RequestBody @Valid  String jsonRequestData ) {
         return productInstanceController.handleProductInstance(jsonRequestData);
     }

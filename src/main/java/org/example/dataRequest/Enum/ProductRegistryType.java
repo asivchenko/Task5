@@ -4,10 +4,10 @@ import lombok.Data;
 
 
 public enum ProductRegistryType {
-    NSO("NSO"),   ///Проблемы с кирилицей при воде утилитой curl  этого нет  а только при вводе request SOAPUI
+    NSO ("НСО"), //NSO("NSO"),   ///Проблемы с кирилицей при воде утилитой curl  этого нет  а только при вводе request SOAPUI
 
     SMO("CMO"),
-    EGO("ЕЖОЭ"),
+    EGO("ЕЖО"),
     DBDS("ДБВС");
 
     public String getProductRegistryType() {
