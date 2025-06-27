@@ -19,6 +19,7 @@ public class ProductInstanceController {
     public ProductInstanceController(RequestMapper requestMapper, ProductInstanceService productInstanceService) {
         this.requestMapper = requestMapper;
         this.productInstanceService=productInstanceService;
+
     }
     public ResponseEntity<?> handleProductInstance (@RequestBody @Valid String jsonRequestData  )  {
         ValidatedProductInstanceRequest  validateRequest;
